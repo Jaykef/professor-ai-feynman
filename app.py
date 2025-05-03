@@ -92,7 +92,7 @@ def search_web(query: str, serpapi_key: str) -> str:
         logger.error("Unexpected error during search: %s", str(e))
         return None
 
-# Custom function to render Markdown to HTML
+# Convert Markdown to HTML
 def render_md_to_html(md_content: str) -> str:
     try:
         html_content = markdown.markdown(md_content, extensions=['extra', 'fenced_code', 'tables'])
@@ -159,8 +159,8 @@ def get_model_client(service, api_key):
         return OpenAIChatCompletionClient(model="gpt-4o-2024-08-06", api_key=api_key)
     elif service == "Anthropic-claude-3-sonnet-20240229":
         return AnthropicChatCompletionClient(model="claude-3-sonnet-20240229", api_key=api_key)
-    elif service == "Google-gemini-1.5-flash":
-        return OpenAIChatCompletionClient(model="gemini-1.5-flash", api_key=api_key)
+    elif service == "Google-gemini-2.0-flash":
+        return OpenAIChatCompletionClient(model="gemini-2.0-flash", api_key=api_key)
     elif service == "Ollama-llama3.2":
         return OllamaChatCompletionClient(model="llama3.2")
     elif service == "Azure AI Foundry":
@@ -845,9 +845,9 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
         yield (
             f"""
             <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; min-height: 700px; padding: 20px; text-align: center; border: 1px solid #ddd; border-radius: 8px;">
-                <h2 style="color: #d9534f;">Error during lecture generation</h2>
-                <p style="margin-top: 10px; font-size: 16px;">{str(e)}</p>
-                <p style="margin-top: 20px;">Please try again or adjust your inputs.</p>
+                <h2 style="color: #000;">Error during lecture generation</h2>
+                <p style="margin-top: 10px; font-size: 16px;color: #000;">{str(e)}</p>
+                <p style="margin-top: 20px;">Please try again</p>
             </div>
             """,
             []
@@ -1206,6 +1206,8 @@ js_code = """
 with gr.Blocks(
     title="Agent Feynman",
     css="""
+    h1 {text-align: center}
+    h2 {text-align: center}
     #lecture-container {font-family: 'Times New Roman', Times, serif;}
     #slide-content {font-size: 48px; line-height: 1.2;}
     #form-group {box-shadow: 0 0 2rem rgba(0, 0, 0, .14) !important; border-radius: 30px; font-weight: 900; color: #000; background-color: white;}
@@ -1231,22 +1233,22 @@ with gr.Blocks(
                         "Azure AI Foundry",
                         "OpenAI-gpt-4o-2024-08-06",
                         "Anthropic-claude-3-sonnet-20240229",
-                        "Google-gemini-1.5-flash",
+                        "Google-gemini-2.0-flash",
                         "Ollama-llama3.2",
                     ],
                     label="Model",
-                    value="Google-gemini-1.5-flash"
+                    value="Google-gemini-2.0-flash"
                 )
                 api_key = gr.Textbox(label="Model Provider API Key", type="password", placeholder="Not required for Ollama or Azure AI Foundry (use GITHUB_TOKEN env var)")
                 serpapi_key = gr.Textbox(label="SerpApi Key (For Research Agent)", type="password", placeholder="Enter your SerpApi key (optional)")
-                num_slides = gr.Slider(1, 20, step=1, label="Number of Content Slides", value=3)
+                num_slides = gr.Slider(1, 20, step=1, label="Number of Lecture Slides (plus intro and ending slides)", value=3)
                 speaker_audio = gr.Audio(label="Speaker sample speech (MP3 or WAV)", type="filepath", elem_id="speaker-audio")
                 generate_btn = gr.Button("Generate Lecture")
         with gr.Column(scale=2):
             default_slide_html = """
             <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; min-height: 700px; padding: 20px; text-align: center; border: 1px solid #ddd; border-radius: 30px; box-shadow: 0 0 2rem rgba(0, 0, 0, .14) !important;">
                 <h2 style="font-style: italic; color: #000;">Waiting for lecture content...</h2>
-                <p style="margin-top: 10px; font-size: 16px;">Please Generate lecture content via the form on the left first before lecture begins</p>
+                <p style="margin-top: 10px; font-size: 16px;color: #000">Please Generate lecture content via the form on the left first before lecture begins</p>
             </div>
             """
             slide_display = gr.HTML(label="Lecture Slides", value=default_slide_html, elem_id="slide-display")
