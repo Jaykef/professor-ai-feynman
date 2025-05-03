@@ -21,7 +21,8 @@ The application follows a modular, agent-based architecture:
 
 <img width="1115" alt="Image" src="https://github.com/user-attachments/assets/e120128f-41e0-4657-990d-699b26c58c1c" />
 
-<img width="1073" alt="Image" src="https://github.com/user-attachments/assets/a59d8eca-09c1-4a95-8c09-6beaa4b63251" />
+### Demo: https://drive.google.com/file/d/1mCsjyU-RjPDaeMk0bw37_D53ZwSL0-Cm/view?usp=drive_link
+<img width="1075" alt="Image" src="https://github.com/user-attachments/assets/2409ca02-43d4-4288-815a-6b442925f4bd" />
 
 ## Installation
 1. Clone the repository: `git clone https://github.com/yourusername/professor-ai-feynman.git`
