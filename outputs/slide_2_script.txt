@@ -1,0 +1,1 @@
+So, what's the big deal with LLM agents? It's like giving a super-smart parrot the ability to not just mimic, but actually *do* things. They can reason, plan, even understand context better than your average chatbot – but not as well as a human, naturally.

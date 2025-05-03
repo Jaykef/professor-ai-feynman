@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Slide</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .slide {
+            width: 100%;
+            height: 90%;
+            position: relative;
+            border: none;
+        }
+        .header {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            color: #000000;
+        }
+        .header-left {
+            margin-left: 20px;
+        }
+        .header-right {
+            margin-right: 20px;
+        }
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 48px;
+            line-height: 1.2;
+        }
+        .content p {
+            margin: 10px 0;
+            font-size: 24px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            color: #000000;
+        }
+        .footer-left {
+            margin-left: 20px;
+        }
+        .footer-right {
+            margin-right: 20px;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #050505;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="header">
+            <div class="header-left">Slide: 5</div>
+            <div class="header-center">Slide 5, Closing</div>
+            <div class="header-right">Introduction to Agents</div>
+        </div>
+        <hr style="position: absolute; top: 40px; width: 100%;">
+        <div class="content">
+            <p>The End
+Thank you</p>
+        </div>
+        <hr style="position: absolute; bottom: 40px; width: 100%;">
+        <div class="footer">
+            <div class="footer-left">Prof. AI Feynman</div>
+            <div class="footer-right">May 2nd, 2025</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+autogen-agentchat
+autogen-ext
+gradio
+torch==2.2.2
+TTS
+autogen-ext[anthropic]
+autogen-ext[openai,azure]
+autogen-ext[ollama]
+serpapi
+weasyprint
+google-search-results
+pillow
+soundfile
+markdown-pdf
