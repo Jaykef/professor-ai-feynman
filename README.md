@@ -1,4 +1,4 @@
-# Professor AI Feynman: A Multi-Agent Tool for Learning Anything the Feynman way.
+# Professor AI Feynman: A Multi-Agent Tool for Learning Anything the Feynman way | Jaward Sesay
 
 ### Project Description
 Professor AI Feynman is an innovative multi-agent application designed to generate and teach personalized educational lecture materials using a multi-agent framework (Microsoft's Autogen). As a big fan of Professor Richard Feynman and his exceptional teaching methods, I was inspired to build his persona into a network of agents equipped with tools to deliver lectures in his engaging, accessible style. The project aims to simplify complex topics into compelling presentations for diverse audiences (e.g., conferences, universities, high schools). Leveraging advanced LLMs for text content generation and Coqui's TTS model (XTTS_v2) for speech generation, it automates the creation of multimedia lectures, making it ideal for educators and students.
