@@ -14,9 +14,9 @@ Professor AI Feynman is a nascent multi-agent application designed to generate a
 ### Architecture
 The application follows a modular, agent-based architecture:
 - **Research Agent**: Does thorough research on the given topic using SerpApi for search.
-- **Slide Agent**: Generates structured slide content in JSON format and converts it to HTML.
-- **Script Agent**: Produces narration scripts aligned with slide content.
-- **Feynman Agent**: Reviews and validates the output for coherence, then delivers the lecture.
+- **Slide Agent**: Generates structured slide content in JSON format and converts it to HTML for easy rendering.
+- **Script Agent**: Produces narration scripts for each slide aligned with overall lecture contents.
+- **Feynman Agent**: Reviews and validates completed tasks by all other agents, then delivers the lecture.
 - The UI is built with Gradio, providing a simple, user-friendly interface with real-time progress updates and file downloads. The design emphasizes responsiveness, ensuring compatibility across devices with dynamic font adjustments.
 
 <img width="1115" alt="Image" src="https://github.com/user-attachments/assets/e120128f-41e0-4657-990d-699b26c58c1c" />
@@ -25,7 +25,7 @@ The application follows a modular, agent-based architecture:
 <img width="1075" alt="Image" src="https://github.com/user-attachments/assets/2409ca02-43d4-4288-815a-6b442925f4bd" />
 
 ## Installation
-1. Clone the repository: `git clone https://github.com/yourusername/professor-ai-feynman.git`
+1. Clone the repository: `git clone https://github.com/Jaykef/professor-ai-feynman.git`
 2. Navigate to the project directory: `cd professor-ai-feynman`
 3. Install dependencies: `pip install -r requirements.txt`
 4. Set environment variables (e.g., API keys for OpenAI, Anthropic, SerpApi) in a `.env` file or system environment.
