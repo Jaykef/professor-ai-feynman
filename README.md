@@ -21,7 +21,8 @@ The application follows a modular, agent-based architecture:
 
 <img width="1115" alt="Image" src="https://github.com/user-attachments/assets/e120128f-41e0-4657-990d-699b26c58c1c" />
 
-### Demo: https://drive.google.com/file/d/1mCsjyU-RjPDaeMk0bw37_D53ZwSL0-Cm/view?usp=sharing
+### Demo Video: https://drive.google.com/file/d/1mCsjyU-RjPDaeMk0bw37_D53ZwSL0-Cm/view?usp=sharing
+### Try Demo on huggingface: https://huggingface.co/spaces/Jaward/Professor-AI-Feynman
 <img width="1075" alt="Image" src="https://github.com/user-attachments/assets/2409ca02-43d4-4288-815a-6b442925f4bd" />
 
 ## Installation
