@@ -369,7 +369,7 @@ async def update_audio_preview(audio_file):
 
 # Create a zip file of .md, .txt, and .mp3 files
 def create_zip_of_files(file_paths):
-    zip_path = os.path.join(OUTPUT_DIR, "lecture_files.zip")
+    zip_path = os.path.join(OUTPUT_DIR, "all_lecture_materials.zip")
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for file_path in file_paths:
             if os.path.exists(file_path):
@@ -445,7 +445,7 @@ Example output for 1 content slide (total 3 slides):
         model_client=model_client,
         handoffs=["feynman_agent"],
         system_message=f"""
-You are a Script Agent model after Richard Feynman. Access the JSON array of {total_slides} slides from the conversation history, which includes an Introduction slide, {content_slides} content slides, and a Closing slide. Generate a narration script (1-2 sentences) for each of the {total_slides} slides, summarizing its content in a clear, academically inclined tone, with humour as a professor feynman would deliver it. Avoid using non-verbal fillers such as "um," "you know," or "like." Output ONLY a JSON array wrapped in ```json ... ``` with exactly {total_slides} strings, one script per slide, in the same order. Ensure the JSON is valid and complete. After outputting, use the handoff_to_feynman_agent tool. If scripts cannot be generated, retry once.
+You are a Script Agent model after Richard Feynman. Access the JSON array of {total_slides} slides from the conversation history, which includes an Introduction slide, {content_slides} content slides, and a Closing slide. Generate a narration script (1-2 sentences) for each of the {total_slides} slides, summarizing its content in a clear, academically inclined tone, with humour as professor feynman would deliver it. Ensure the lecture is engaging and covers the fundamental requirements of the topic. Overall keep lecture engaging yet highly informative, covering the fundamental requirements of the topic. Output ONLY a JSON array wrapped in ```json ... ``` with exactly {total_slides} strings, one script per slide, in the same order. Ensure the JSON is valid and complete. After outputting, use the handoff_to_feynman_agent tool. If scripts cannot be generated, retry once.
 
 - For the Introduction slide, the script should be a welcoming message introducing the lecture.
 - For the Closing slide, the script should be a brief farewell and thank you message.
@@ -658,7 +658,7 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
             elif source == "feynman_agent" and isinstance(message, TextMessage) and "TERMINATE" in message.content:
                 logger.info("Feynman Agent completed lecture review: %s", message.content)
                 progress = 90
-                label = "Lecture materials ready. Generating audio..."
+                label = "Lecture materials ready. Generating lecture speech..."
                 file_paths = [f for f in os.listdir(OUTPUT_DIR) if f.endswith(('.md', '.txt'))]
                 file_paths.sort()
                 file_paths = [os.path.join(OUTPUT_DIR, f) for f in file_paths]
@@ -767,7 +767,7 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
                 audio_files.append(None)
                 audio_urls[i] = None
                 progress = 90 + ((i + 1) / len(scripts)) * 10
-                label = f"Generating audio for slide {i + 1}/{len(scripts)}..."
+                label = f"Generating speech for slide {i + 1}/{len(scripts)}..."
                 yield (
                     html_with_progress(label, progress),
                     file_paths
@@ -793,7 +793,7 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
                     audio_files.append(audio_file)
                     audio_urls[i] = get_gradio_file_url(audio_file)
                     progress = 90 + ((i + 1) / len(scripts)) * 10
-                    label = f"Generating audio for slide {i + 1}/{len(scripts)}..."
+                    label = f"Generating speech for slide {i + 1}/{len(scripts)}..."
                     file_paths.append(audio_file)  
                     yield (
                         html_with_progress(label, progress),
@@ -808,7 +808,7 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
                         audio_files.append(None)
                         audio_urls[i] = None
                         progress = 90 + ((i + 1) / len(scripts)) * 10
-                        label = f"Generating audio for slide {i + 1}/{len(scripts)}..."
+                        label = f"Generating speech for slide {i + 1}/{len(scripts)}..."
                         yield (
                             html_with_progress(label, progress),
                             file_paths
@@ -951,9 +951,9 @@ js_code = """
                                         const textLength = body.textContent.length;
                                         const screenWidth = window.innerWidth;
                                         // Base font size: 12px max on large screens, scale down to 8px on small screens
-                                        let baseFontSize = Math.min(12, Math.max(8, 12 * (screenWidth / 1920))); // Scale with screen width (1920px as reference)
+                                        let baseFontSize = Math.min(12, Math.max(12, 16 * (screenWidth / 1920))); // Scale with screen width (1920px as reference)
                                         // Adjust inversely with content length
-                                        const adjustedFontSize = Math.max(8, baseFontSize * (1000 / (textLength + 100))); // Minimum 8px, scale down with length
+                                        const adjustedFontSize = Math.max(12, baseFontSize * (1000 / (textLength + 100))); // Minimum 8px, scale down with length
                                         const elements = body.getElementsByTagName('*');
                                         for (let elem of elements) {
                                             elem.style.fontSize = `${adjustedFontSize}px`;
