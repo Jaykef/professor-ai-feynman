@@ -46,7 +46,7 @@ The application follows a modular, agent-based architecture:
 - **AI Models**: OpenAI GPT-4o, Anthropic Claude, Google Gemini, Ollama Llama, Azure AI Foundry
 - **Tools**: SerpApi (web search), Azure AI services
 - **Frontend**: HTML, CSS, JavaScript
-- **Hosting**: Local Gradio server (shareable via Gradio)
+- **Hosting**: HF Space https://huggingface.co/spaces/Jaward/Professor-AI-Feynman
 
 ## Project Structure
 ```
