@@ -8,6 +8,7 @@ import asyncio
 import logging
 import torch
 import zipfile
+import shutil
 from serpapi import GoogleSearch
 from pydantic import BaseModel
 from autogen_agentchat.agents import AssistantAgent
@@ -92,7 +93,7 @@ def search_web(query: str, serpapi_key: str) -> str:
         logger.error("Unexpected error during search: %s", str(e))
         return None
 
-# Convert Markdown to HTML
+# Custom function to render Markdown to HTML
 def render_md_to_html(md_content: str) -> str:
     try:
         html_content = markdown.markdown(md_content, extensions=['extra', 'fenced_code', 'tables'])
@@ -387,6 +388,21 @@ def get_gradio_file_url(local_path):
 # Async generate lecture materials and audio
 async def on_generate(api_service, api_key, serpapi_key, title, lecture_content_description, lecture_type, speaker_audio, num_slides):
     model_client = get_model_client(api_service, api_key)
+
+    if os.path.exists(OUTPUT_DIR):
+        try:
+            for item in os.listdir(OUTPUT_DIR):
+                item_path = os.path.join(OUTPUT_DIR, item)
+                if os.path.isfile(item_path):
+                    os.unlink(item_path)
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+            logger.info("Cleared outputs directory: %s", OUTPUT_DIR)
+        except Exception as e:
+            logger.error("Failed to clear outputs directory: %s", str(e))
+    else:
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        logger.info("Created outputs directory: %s", OUTPUT_DIR)
     
     # Total slides include user-specified content slides plus Introduction and Closing slides
     content_slides = num_slides
@@ -824,10 +840,10 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
                     {audio_timeline}
                 </div>
                 <div style="display: center; justify-content: center; margin-bottom: 10px;">
-                    <button id="prev-btn" style="border-radius: 50%; width: 40px; height: 40px; margin: 0 5px; font-size: 1.2em; cursor: pointer;"><i class="fas fa-step-backward"></i></button>
-                    <button id="play-btn" style="border-radius: 50%; width: 40px; height: 40px; margin: 0 5px; font-size: 1.2em; cursor: pointer;"><i class="fas fa-play"></i></button>
-                    <button id="next-btn" style="border-radius: 50%; width: 40px; height: 40px; margin: 0 5px; font-size: 1.2em; cursor: pointer;"><i class="fas fa-step-forward"></i></button>
-                    <button id="fullscreen-btn" style="border-radius: 50%; width: 40px; height: 40px; margin: 0 5px; font-size: 1.2em; cursor: pointer;"><i class="fas fa-expand"></i></button>
+                    <button id="prev-btn" style="border-radius: 50%; width: 40px; height: 40px; margin: 0 5px; font-size: 1.2em; cursor: pointer; background-color: lightgrey"><i class="fas fa-step-backward" style="color: #000"></i></button>
+                    <button id="play-btn" style="border-radius: 50%; width: 40px; height: 40px; margin: 0 5px; font-size: 1.2em; cursor: pointer; background-color: lightgrey"><i class="fas fa-play" style="color: #000"></i></button>
+                    <button id="next-btn" style="border-radius: 50%; width: 40px; height: 40px; margin: 0 5px; font-size: 1.2em; cursor: pointer; background-color: lightgrey"><i class="fas fa-step-forward" style="color: #000"></i></button>
+                    <button id="fullscreen-btn" style="border-radius: 50%; width: 40px; height: 40px; margin: 0 5px; font-size: 1.2em; cursor: pointer; background-color: lightgrey"><i style="color: #000" class="fas fa-expand"></i></button>
                 </div>
             </div>
         </div>
@@ -998,8 +1014,8 @@ js_code = """
                         updateSlide(() => {
                             const audio = audioElements[currentSlide];
                             if (audio && audio.play && isPlaying) {
-                                audio.style.border = '50px solid #50f150';
-                                audio.style.borderRadius = '50px';
+                                audio.style.border = '5px solid #50f150';
+                                audio.style.borderRadius = '30px';
                                 audio.play().catch(e => console.error('Audio play failed:', e));
                             }
                         });
@@ -1016,7 +1032,8 @@ js_code = """
                         updateSlide(() => {
                             const audio = audioElements[currentSlide];
                             if (audio && audio.play && isPlaying) {
-                                audio.style.border = '2px solid lightgreen';
+                                audio.style.border = '5px solid #50f150';
+                                audio.style.borderRadius = '30px';
                                 audio.play().catch(e => console.error('Audio play failed:', e));
                             }
                         });
@@ -1069,7 +1086,8 @@ js_code = """
                                 if (audio && audio.play) {
                                     // Highlight the current audio element
                                     audioElements.forEach(a => a.style.border = 'none');
-                                    audio.style.border = '2px solid lightgreen';
+                                    audio.style.border = '5px solid #16cd16';
+                                    audio.style.borderRadius = '30px';
                                     console.log(`Attempting to play audio for slide ${index + 1}`);
                                     audio.play().then(() => {
                                         console.log(`Playing audio for slide ${index + 1}`);
@@ -1241,7 +1259,7 @@ with gr.Blocks(
                 )
                 api_key = gr.Textbox(label="Model Provider API Key", type="password", placeholder="Not required for Ollama or Azure AI Foundry (use GITHUB_TOKEN env var)")
                 serpapi_key = gr.Textbox(label="SerpApi Key (For Research Agent)", type="password", placeholder="Enter your SerpApi key (optional)")
-                num_slides = gr.Slider(1, 20, step=1, label="Number of Lecture Slides (plus intro and ending slides)", value=3)
+                num_slides = gr.Slider(1, 20, step=1, label="Number of Lecture Slides (will add intro and closing slides)", value=3)
                 speaker_audio = gr.Audio(label="Speaker sample speech (MP3 or WAV)", type="filepath", elem_id="speaker-audio")
                 generate_btn = gr.Button("Generate Lecture")
         with gr.Column(scale=2):
