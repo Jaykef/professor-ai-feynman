@@ -1,15 +1,16 @@
 # Professor AI Feynman: A Multi-Agent Tool for Learning Anything the Feynman way | A Microsoft's AI Agent Hackathon Submission - Jaward Sesay
 
 ### Project Description
-Professor AI Feynman is a nascent multi-agent application designed to generate and teach personalized educational lecture materials using a multi-agent framework (Microsoft's Autogen). As a big fan of Professor Richard Feynman and his exceptional teaching methods, I was inspired to build his persona into a network of agents equipped with tools to deliver lectures in his engaging, delightful style. The project aims to simplify complex topics into compelling presentations for diverse audiences (e.g., conferences, universities, high schools). Leveraging advanced LLMs for text content generation and Coqui's TTS model (XTTS_v2) for speech generation, it automates the creation of multimedia lectures, making it ideal for personalized learning.
+Professor AI Feynman is a nascent multi-agent application designed to generate and teach personalized educational lecture materials using a multi-agent framework (Microsoft's Autogen). As a big fan of Professor Richard Feynman and his exceptional teaching methods, I was inspired to build his persona into a network of agents equipped with tools to deliver lectures in his engagin and delightful style. The project aims to simplify complex topics into compelling presentations for diverse audiences (e.g., conferences, universities, high schools). Leveraging advanced LLMs for text content generation and Coqui's TTS model (XTTS_v2) for speech generation along with search (via serpapi), it automates the creation and delivery of multimedia lectures, making it ideal for personalized learning.
 
 ### Features
-- **Autonomous Slide Generation**: Creates HTML slides with titles, content, and metadata based on user-provided topics and audience types.
-- **Narration Script Creation**: Generates concise, academic scripts for each slide using a multi-agent workflow.
-- **Text-to-Speech Audio**: Produces high-quality audio narration using customizable speaker voices (MP3/WAV input).
-- **Interactive Playback**: Offers a web-based interface with navigation (prev/next), play/pause controls, and dynamic font sizing for slides.
-- **Downloadable Materials**: Exports slides, scripts, and audio as a zip file for offline use.
-- **Multi-Agent Collaboration**: Utilizes Autogen's Swarm to coordinate research, slide design, scripting, and review agents.
+- **Multi-Agent Collaboration**: Utilizes Autogen's Swarm to coordinate research, design and generate slides, scripting, review and delivery of lectures in an engaging and insightful manner.
+- **Deep Research**: Has support for web search on given lecture topics, this accounts for higher accuracy in lecture content.
+- **Autonomous Slide Generation**: Creates HTML custom slides with titles, content, and metadata based on user-provided topics and audience types.
+- **Narration Script Generation**: Generates concise, academic scripts for each slide using a multi-agent workflow.
+- **Script Speech Generation (audio for each slide)**: Produces high-quality speech narration using customizable speaker voices (MP3/WAV input).
+- **Seamless Lecture Delivery**: Offers a web-based interface with simultaneous lecture flow of speech and slides. The UI has navigation (prev/next), play/pause controls, and dynamic font sizing for slides.
+- **Downloadable Lecture Materials**: Exports slides, scripts, and audio as a zip file for offline use.
 
 ### Architecture
 The application follows a modular, agent-based architecture:
