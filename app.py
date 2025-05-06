@@ -9,6 +9,7 @@ import logging
 import torch
 import zipfile
 import shutil
+import datetime
 from serpapi import GoogleSearch
 from pydantic import BaseModel
 from autogen_agentchat.agents import AssistantAgent
@@ -114,14 +115,15 @@ def create_slides(slides: list[dict], title: str, output_dir: str = OUTPUT_DIR) 
             slide_number = i + 1
             md_content = slide['content']
             html_content = render_md_to_html(md_content)
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
             
             # Replace placeholders in the template
             slide_html = template_content.replace("<!--SLIDE_NUMBER-->", str(slide_number))
-            slide_html = slide_html.replace("section title", f"Slide {slide_number}, {slide['title']}")
+            slide_html = slide_html.replace("section title", f"{slide['title']}")
             slide_html = slide_html.replace("Lecture title", title)
             slide_html = slide_html.replace("<!--CONTENT-->", html_content)
             slide_html = slide_html.replace("speaker name", "Prof. AI Feynman")
-            slide_html = slide_html.replace("date", "May 2nd, 2025")
+            slide_html = slide_html.replace("date", date)
             
             html_file = os.path.join(output_dir, f"slide_{slide_number}.html")
             with open(html_file, "w", encoding="utf-8") as f:
@@ -407,6 +409,7 @@ async def on_generate(api_service, api_key, serpapi_key, title, lecture_content_
     # Total slides include user-specified content slides plus Introduction and Closing slides
     content_slides = num_slides
     total_slides = content_slides + 2 
+    date = datetime.datetime.now().strftime("%Y-%m-%d")
     
     research_agent = AssistantAgent(
         name="research_agent",
@@ -422,7 +425,7 @@ async def on_generate(api_service, api_key, serpapi_key, title, lecture_content_
         system_message=f"""
 You are a Slide Agent. Using the research from the conversation history and the specified number of content slides ({content_slides}), generate exactly {content_slides} content slides, plus an Introduction slide as the first slide and a Closing slide as the last slide, making a total of {total_slides} slides. 
 
-- The Introduction slide (first slide) should have the title "Introduction to {title}" and content containing only the lecture title, speaker name (Prof. AI Feynman), and date (May 2nd, 2025), centered, in plain text.
+- The Introduction slide (first slide) should have the title "{title}" and content containing only the lecture title, speaker name (Prof. AI Feynman), and date {date}, centered, in plain text.
 - The Closing slide (last slide) should have the title "Closing" and content containing only "The End\nThank you", centered, in plain text.
 - The remaining {content_slides} slides should be content slides based on the lecture description and audience type, with meaningful titles and content in valid Markdown format.
 
@@ -432,7 +435,7 @@ Example output for 1 content slide (total 3 slides):
 ```json
 [
     {{"title": "Introduction to AI Basics", "content": "AI Basics\nProf. AI Feynman\nMay 2nd, 2025"}},
-    {{"title": "Slide 1: What is AI?", "content": "# What is AI?\n- Definition: Systems that mimic human intelligence\n- Key areas: ML, NLP, Robotics"}},
+    {{"title": "What is AI?", "content": "# What is AI?\n- Definition: Systems that mimic human intelligence\n- Key areas: ML, NLP, Robotics"}},
     {{"title": "Closing", "content": "The End\nThank you"}}
 ]
 ```""",
@@ -1260,7 +1263,7 @@ with gr.Blocks(
                 api_key = gr.Textbox(label="Model Provider API Key", type="password", placeholder="Not required for Ollama or Azure AI Foundry (use GITHUB_TOKEN env var)")
                 serpapi_key = gr.Textbox(label="SerpApi Key (For Research Agent)", type="password", placeholder="Enter your SerpApi key (optional)")
                 num_slides = gr.Slider(1, 20, step=1, label="Number of Lecture Slides (will add intro and closing slides)", value=3)
-                speaker_audio = gr.Audio(label="Speaker sample speech (MP3 or WAV)", type="filepath", elem_id="speaker-audio")
+                speaker_audio = gr.Audio(value="feynman.mp3", label="Speaker sample speech (MP3 or WAV)", type="filepath", elem_id="speaker-audio")
                 generate_btn = gr.Button("Generate Lecture")
         with gr.Column(scale=2):
             default_slide_html = """
