@@ -1,4 +1,4 @@
-# Professor AI Feynman: A Multi-Agent Tool for Learning Anything the Feynman way.
+# Professor AI Feynman: A Multi-Agent Tool for Learning Anything the Feynman way
 # Jaward Sesay - Microsoft AI Agent Hackathon Submission April 2025
 import os
 import json
@@ -94,7 +94,7 @@ def search_web(query: str, serpapi_key: str) -> str:
         logger.error("Unexpected error during search: %s", str(e))
         return None
 
-# Custom function to render Markdown to HTML
+# Custom renderer for slides - Markdown to HTML
 def render_md_to_html(md_content: str) -> str:
     try:
         html_content = markdown.markdown(md_content, extensions=['extra', 'fenced_code', 'tables'])
@@ -103,7 +103,7 @@ def render_md_to_html(md_content: str) -> str:
         logger.error("Failed to render Markdown to HTML: %s", str(e))
         return "<div>Error rendering content</div>"
 
-# Define create_slides tool for generating HTML slides
+# Slide tool for generating HTML slides used by slide_agent
 def create_slides(slides: list[dict], title: str, output_dir: str = OUTPUT_DIR) -> list[str]:
     try:
         html_files = []
@@ -145,7 +145,7 @@ def create_slides(slides: list[dict], title: str, output_dir: str = OUTPUT_DIR) 
         logger.error("Failed to create HTML slides: %s", str(e))
         return []
 
-# Define helper function for progress HTML
+# Dynamic progress bar
 def html_with_progress(label, progress):
     return f"""
     <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; min-height: 700px; padding: 20px; text-align: center; border: 1px solid #ddd; border-radius: 8px;">
@@ -201,7 +201,7 @@ def clean_script_text(script):
     logger.info("Cleaned script: %s", script)
     return script
 
-# Helper function to validate and convert speaker audio
+# Helper to validate and convert speaker audio
 async def validate_and_convert_speaker_audio(speaker_audio):
     if not speaker_audio or not os.path.exists(speaker_audio):
         logger.warning("Speaker audio file does not exist: %s. Using default voice.", speaker_audio)
@@ -388,7 +388,7 @@ def get_gradio_file_url(local_path):
     return f"/gradio_api/file={relative_path}"
 
 # Async generate lecture materials and audio
-async def on_generate(api_service, api_key, serpapi_key, title, lecture_content_description, lecture_type, speaker_audio, num_slides):
+async def on_generate(api_service, api_key, serpapi_key, title, lecture_content_description, lecture_type, lecture_style, speaker_audio, num_slides):
     model_client = get_model_client(api_service, api_key)
 
     if os.path.exists(OUTPUT_DIR):
@@ -427,7 +427,12 @@ You are a Slide Agent. Using the research from the conversation history and the 
 
 - The Introduction slide (first slide) should have the title "{title}" and content containing only the lecture title, speaker name (Prof. AI Feynman), and date {date}, centered, in plain text.
 - The Closing slide (last slide) should have the title "Closing" and content containing only "The End\nThank you", centered, in plain text.
-- The remaining {content_slides} slides should be content slides based on the lecture description and audience type, with meaningful titles and content in valid Markdown format.
+- The remaining {content_slides} slides should be content slides based on the lecture description, audience type, and lecture style ({lecture_style}), with meaningful titles and content in valid Markdown format. Adapt the content to the lecture style to suit diverse learners:
+  - Feynman: Explains complex ideas with simplicity, clarity, and enthusiasm, emulating Richard Feynman's teaching style.
+  - Socratic: Poses thought-provoking questions to guide learners to insights without requiring direct interaction.
+  - Humorous: Infuses wit and light-hearted anecdotes to make content engaging and memorable.
+  - Inspirational - Motivating: Uses motivational language and visionary ideas to spark enthusiasm and curiosity.
+  - Reflective: Encourages introspection with a calm, contemplative tone to deepen understanding.
 
 Output ONLY a JSON array wrapped in ```json ... ``` in a TextMessage, where each slide is an object with 'title' and 'content' keys. After generating the JSON, use the create_slides tool to produce HTML slides, then use the handoff_to_script_agent tool to pass the task to the Script Agent. Do not include any explanatory text or other messages.
 
@@ -448,11 +453,15 @@ Example output for 1 content slide (total 3 slides):
         model_client=model_client,
         handoffs=["feynman_agent"],
         system_message=f"""
-You are a Script Agent model after Richard Feynman. Access the JSON array of {total_slides} slides from the conversation history, which includes an Introduction slide, {content_slides} content slides, and a Closing slide. Generate a narration script (1-2 sentences) for each of the {total_slides} slides, summarizing its content in a clear, academically inclined tone, with humour as professor feynman would deliver it. Ensure the lecture is engaging and covers the fundamental requirements of the topic. Overall keep lecture engaging yet highly informative, covering the fundamental requirements of the topic. Output ONLY a JSON array wrapped in ```json ... ``` with exactly {total_slides} strings, one script per slide, in the same order. Ensure the JSON is valid and complete. After outputting, use the handoff_to_feynman_agent tool. If scripts cannot be generated, retry once.
+You are a Script Agent modeled after Richard Feynman. Access the JSON array of {total_slides} slides from the conversation history, which includes an Introduction slide, {content_slides} content slides, and a Closing slide. Generate a narration script (1-2 sentences) for each of the {total_slides} slides, summarizing its content in a clear, academically inclined tone, with humor as Professor Feynman would deliver it. Ensure the lecture is engaging, covers the fundamental requirements of the topic, and aligns with the lecture style ({lecture_style}) to suit diverse learners:
+  - Feynman: Explains complex ideas with simplicity, clarity, and enthusiasm, emulating Richard Feynman's teaching style.
+  - Socratic: Poses thought-provoking questions to guide learners to insights without requiring direct interaction.
+  - Narrative: Use storytelling or analogies to explain concepts.
+  - Analytical: Focus on data, equations, or logical breakdowns.
+  - Humorous: Infuses wit and light-hearted anecdotes to make content engaging and memorable.
+  - Reflective: Encourages introspection with a calm, contemplative tone to deepen understanding.
 
-- For the Introduction slide, the script should be a welcoming message introducing the lecture.
-- For the Closing slide, the script should be a brief farewell and thank you message.
-- For the content slides, summarize the slide content academically.
+Output ONLY a JSON array wrapped in ```json ... ``` with exactly {total_slides} strings, one script per slide, in the same order. Ensure the JSON is valid and complete. After outputting, use the handoff_to_feynman_agent tool. If scripts cannot be generated, retry once.
 
 Example for 3 slides (1 content slide):
 ```json
@@ -470,8 +479,8 @@ Example for 3 slides (1 content slide):
         model_client=model_client,
         handoffs=[],
         system_message=f"""
-You are Agent Feynman. Review the slides and scripts from the conversation history to ensure coherence, completeness, and that exactly {total_slides} slides and {total_slides} scripts are received, including the Introduction and Closing slides. Verify that HTML slide files exist in the outputs directory. Output a confirmation message summarizing the number of slides, scripts, and HTML files status. If slides, scripts, or HTML files are missing, invalid, or do not match the expected count ({total_slides}), report the issue clearly. Use 'TERMINATE' to signal completion.
-Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files. Lecture is coherent. TERMINATE'
+You are Agent Feynman. Review the slides and scripts from the conversation history to ensure coherence, completeness, and that exactly {total_slides} slides and {total_slides} scripts are received, including the Introduction and Closing slides. Verify that HTML slide files exist in the outputs directory and align with the lecture style ({lecture_style}). Output a confirmation message summarizing the number of slides, scripts, and HTML files status. If slides, scripts, or HTML files are missing, invalid, or do not match the expected count ({total_slides}), report the issue clearly. Use 'TERMINATE' to signal completion.
+Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files. Lecture is coherent and aligns with {lecture_style} style. TERMINATE'
 """)
     
     swarm = Swarm(
@@ -480,7 +489,7 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
     )
     
     progress = 0
-    label = "Research: in progress..."
+    label = "Researching lecture topic..."
     yield (
         html_with_progress(label, progress),
         []
@@ -491,10 +500,11 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
     Lecture Title: {title}
     Lecture Content Description: {lecture_content_description}
     Audience: {lecture_type}
+    Lecture Style: {lecture_style}
     Number of Content Slides: {content_slides}
     Please start by researching the topic, or proceed without research if search is unavailable.
     """
-    logger.info("Starting lecture generation for title: %s with %d content slides (total %d slides)", title, content_slides, total_slides)
+    logger.info("Starting lecture generation for title: %s with %d content slides (total %d slides), style: %s", title, content_slides, total_slides, lecture_style)
     
     slides = None
     scripts = None
@@ -763,14 +773,15 @@ Example: 'Received {total_slides} slides, {total_slides} scripts, and HTML files
                     f.write(cleaned_script or "")
                 logger.info("Saved script to %s: %s", script_file, cleaned_script)
             except Exception as e:
-                logger.error("Error saving script to %s: %s", script_file, str(e))
+                logger.error("Error saving script to %s: %s", 
+                script_file, str(e))
             
             if not cleaned_script:
                 logger.error("Skipping audio for slide %d due to empty or invalid script", i + 1)
                 audio_files.append(None)
                 audio_urls[i] = None
                 progress = 90 + ((i + 1) / len(scripts)) * 10
-                label = f"Generating speech for slide {i + 1}/{len(scripts)}..."
+                label = f"Generating lecture speech for slide {i + 1}/{len(scripts)}..."
                 yield (
                     html_with_progress(label, progress),
                     file_paths
@@ -1249,6 +1260,11 @@ with gr.Blocks(
                 title = gr.Textbox(label="Lecture Title", placeholder="e.g. Introduction to AI")
                 lecture_content_description = gr.Textbox(label="Lecture Content Description", placeholder="e.g. Focus on recent advancements")
                 lecture_type = gr.Dropdown(["Conference", "University", "High school"], label="Audience", value="University")
+                lecture_style = gr.Dropdown(
+                    ["Feynman - Simplifies complex ideas with enthusiasm", "Socratic - Guides insights with probing questions", "Inspirational - Sparks enthusiasm with visionary ideas", "Reflective - Promotes introspection with a calm tone", "Humorous - Uses wit and anecdotes for engaging content"],
+                    label="Lecture Style",
+                    value="Feynman - Simplifies complex ideas with enthusiasm"
+                )
                 api_service = gr.Dropdown(
                     choices=[
                         "Azure AI Foundry",
@@ -1283,7 +1299,7 @@ with gr.Blocks(
     
     generate_btn.click(
         fn=on_generate,
-        inputs=[api_service, api_key, serpapi_key, title, lecture_content_description, lecture_type, speaker_audio, num_slides],
+        inputs=[api_service, api_key, serpapi_key, title, lecture_content_description, lecture_type, lecture_style, speaker_audio, num_slides],
         outputs=[slide_display, file_output]
     )
 
