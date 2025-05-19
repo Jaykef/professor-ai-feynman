@@ -36,14 +36,14 @@ The application follows a modular, agent-based architecture:
 
 ## Usage
 1. Launch the Gradio interface by running the app.
-2. Input lecture details: title, content description, audience type, number of slides, and optional speaker audio.
+2. Input lecture details: title, content description, audience type, prefered lecture style, number of slides, and sample speaker audio.
 3. Select an AI model (e.g., OpenAI, Anthropic) and provide API keys if required.
 4. Click "Generate Lecture" to initiate the multi-agent process.
 5. Monitor progress and interact with the generated slides, audio, and download options once complete.
 
 ## Tech Stack
 - **Languages**: Python
-- **Frameworks/Libraries**: Gradio, Microsoft Autogen, pydub, soundfile, TTS (Coqui), markdown
+- **Frameworks/Libraries**: Gradio, Microsoft Autogen (Swarm), TTS (Coqui), Pytorch
 - **AI Models**: OpenAI GPT-4o, Anthropic Claude, Google Gemini, Ollama Llama, Azure AI Foundry
 - **Tools**: SerpApi (web search), Azure AI services
 - **Frontend**: HTML, CSS, JavaScript
