@@ -35,7 +35,7 @@ The application follows a modular, agent-based architecture:
 6. Ensure Coqui TTS model (XTTS_v2) is downloaded- this automatically happens once when you run the app: Follow Coqui TTS inference [instructions](https://github.com/coqui-ai/TTS).
 
 ## Usage
-1. Launch the Gradio interface by running the app.
+1. Open app in browser at: http://127.0.0.1:7860
 2. Input lecture details: title, content description, audience type, prefered lecture style, number of slides, and sample speaker audio.
 3. Select an AI model (e.g., OpenAI, Anthropic) and provide API keys if required.
 4. Click "Generate Lecture" to initiate the multi-agent process.
