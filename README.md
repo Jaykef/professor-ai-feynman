@@ -43,10 +43,10 @@ The application follows a modular, agent-based architecture:
 
 ## Tech Stack
 - **Languages**: Python
-- **Frameworks/Libraries**: Gradio, Microsoft Autogen (Swarm), TTS (Coqui), Pytorch
+- **Frameworks/Libraries**: Microsoft Autogen (Swarm), TTS (Coqui), Pytorch
 - **AI Models**: OpenAI GPT-4o, Anthropic Claude, Google Gemini, Ollama Llama, Azure AI Foundry
 - **Tools**: SerpApi (web search), Azure AI services
-- **Frontend**: HTML, CSS, JavaScript
+- **Frontend**: Gradio, JavaScript
 - **Hosting**: HF Space https://huggingface.co/spaces/Jaward/Professor-AI-Feynman
 
 ## Project Structure
